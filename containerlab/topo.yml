@@ -3,34 +3,34 @@ name: security-lab1
 topology:
   nodes:
     # ── Edge 라우터 ──────────────────────────
-    vyos:
+    edge1:
       kind: vyosnetworks_vyos
       image: vyos:2026.03-stream
       mgmt-ipv4: 172.20.20.10
 
     # ── Core 스위치 (Arista EOS) ─────────────
-    core-sw1:
+    core1:
       kind: ceos
       image: ceos:4.36.0F
       mgmt-ipv4: 172.20.20.20
 
-    core-sw2:
+    core2:
       kind: ceos
       image: ceos:4.36.0F
       mgmt-ipv4: 172.20.20.30
 
     # ── Access 스위치 (Arista EOS) ───────────
-    access-sw1:
+    access1:
       kind: ceos
       image: ceos:4.36.0F
       mgmt-ipv4: 172.20.20.40
 
-    access-sw2:
+    access2:
       kind: ceos
       image: ceos:4.36.0F
       mgmt-ipv4: 172.20.20.50
 
-    access-sw3:
+    access3:
       kind: ceos
       image: ceos:4.36.0F
       mgmt-ipv4: 172.20.20.60
@@ -40,83 +40,78 @@ topology:
       kind: linux
       image: alpine:latest
       exec:
-        - ip addr add 192.168.10.11/24 dev eth1
-        - ip route add default via 192.168.10.1
+        - ip addr add 192.168.110.11/24 dev eth1
+        - ip route add default via 192.168.110.1
         - ip link set eth1 up
 
-    host2:
+    guest1:
       kind: linux
       image: alpine:latest
       exec:
-        - ip addr add 192.168.10.12/24 dev eth1
-        - ip route add default via 192.168.10.1
+        - ip addr add 192.168.150.11/24 dev eth1
+        - ip route add default via 192.168.150.1
         - ip link set eth1 up
 
-    host3:
+    admin:
       kind: linux
       image: alpine:latest
       exec:
-        - ip addr add 192.168.20.11/24 dev eth1
-        - ip route add default via 192.168.20.1
+        - ip addr add 192.168.120.11/24 dev eth1
+        - ip route add default via 192.168.120.1
         - ip link set eth1 up
 
-    host4:
+    monitoring:
       kind: linux
       image: alpine:latest
       exec:
-        - ip addr add 192.168.20.12/24 dev eth1
-        - ip route add default via 192.168.20.1
+        - ip addr add 192.168.120.12/24 dev eth1
+        - ip route add default via 192.168.120.1
         - ip link set eth1 up
 
     # ── Server 노드 (Alpine + httpd) ──────────
-    server1:
+    nas:
       kind: linux
       image: alpine:latest
       exec:
-        - ip addr add 192.168.30.11/24 dev eth1
-        - ip route add default via 192.168.30.1
+        - ip addr add 192.168.130.11/24 dev eth1
+        - ip route add default via 192.168.130.1
         - ip link set eth1 up
-        - mkdir -p /www
-        - sh -c "echo '<h1>Server-A</h1><p>VLAN30 - 192.168.30.11</p>' > /www/index.html"
-        - httpd -p 80 -h /www
-        - nc -lk -p 443 &
+        - mkdir -p /storage
+        - sh -c "echo 'backup data' > /storage/file1.txt"
 
-    server2:
+    www:
       kind: linux
       image: alpine:latest
       exec:
-        - ip addr add 192.168.30.12/24 dev eth1
-        - ip route add default via 192.168.30.1
+        - ip addr add 192.168.140.11/24 dev eth1
+        - ip route add default via 192.168.140.1
         - ip link set eth1 up
         - mkdir -p /www
-        - sh -c "echo '<h1>Server-B</h1><p>VLAN30 - 192.168.30.12</p>' > /www/index.html"
+        - sh -c "echo '<h1>Server-B</h1><p>VLAN30 - 192.168.140.11</p>' > /www/index.html"
         - httpd -p 80 -h /www
         - nc -lk -p 443 &
 
   links:
-    # VyOS ↔ Core
-    - endpoints: ["vyos:eth1", "core-sw1:eth1"]
-    - endpoints: ["vyos:eth2", "core-sw2:eth1"]
+    # edge - core
+    - endpoints: ["edge1:eth2", "core1:eth1"]
+    - endpoints: ["edge1:eth3", "core2:eth1"]
 
-    # Core peer-link (MLAG / STP)
-    - endpoints: ["core-sw1:eth2", "core-sw2:eth2"]
+    # core - core
+    - endpoints: ["core1:eth2", "core2:eth2"]
+    - endpoints: ["core1:eth3", "core2:eth3"]
 
-    # Core-SW1 ↔ Access (LACP / Port-Channel)
-    - endpoints: ["core-sw1:eth3", "access-sw1:eth1"]
-    - endpoints: ["core-sw1:eth4", "access-sw1:eth2"]
-    - endpoints: ["core-sw1:eth5", "access-sw2:eth1"]
-    - endpoints: ["core-sw1:eth6", "access-sw2:eth2"]
+    # core - access
+    - endpoints: ["core1:eth4", "access1:eth1"]
+    - endpoints: ["core1:eth5", "access2:eth1"]
+    - endpoints: ["core1:eth6", "access3:eth1"]
+    - endpoints: ["core2:eth4", "access1:eth2"]
+    - endpoints: ["core2:eth5", "access2:eth2"]
+    - endpoints: ["core2:eth6", "access3:eth2"]
 
-    # Core-SW2 ↔ Access (LACP / Port-Channel)
-    - endpoints: ["core-sw2:eth3", "access-sw2:eth3"]
-    - endpoints: ["core-sw2:eth4", "access-sw2:eth4"]
-    - endpoints: ["core-sw2:eth5", "access-sw3:eth1"]
-    - endpoints: ["core-sw2:eth6", "access-sw3:eth2"]
-
-    # Access ↔ Host/Server
-    - endpoints: ["access-sw1:eth3", "host1:eth1"]
-    - endpoints: ["access-sw1:eth4", "host2:eth1"]
-    - endpoints: ["access-sw2:eth5", "host3:eth1"]
-    - endpoints: ["access-sw2:eth6", "host4:eth1"]
-    - endpoints: ["access-sw3:eth3", "server1:eth1"]
-    - endpoints: ["access-sw3:eth4", "server2:eth1"]
+    # access - endpoint
+    - endpoints: ["access1:eth3", "host1:eth1"]
+    - endpoints: ["access1:eth4", "guest1:eth1"]
+    - endpoints: ["access2:eth3", "admin:eth1"]
+    - endpoints: ["access2:eth4", "monitoring:eth1"]
+    - endpoints: ["access3:eth3", "nas:eth1"]
+    - endpoints: ["access3:eth4", "www:eth1"]
