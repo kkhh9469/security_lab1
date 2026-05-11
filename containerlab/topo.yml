@@ -8,27 +8,27 @@ topology:
       mgmt-ipv4: 172.20.20.10
 
     core1:
-      kind: ceos
+      kind: arista_ceos
       image: ceos:4.36.0F
       mgmt-ipv4: 172.20.20.20
 
     core2:
-      kind: ceos
+      kind: arista_ceos
       image: ceos:4.36.0F
       mgmt-ipv4: 172.20.20.30
 
     access1:
-      kind: ceos
+      kind: arista_ceos
       image: ceos:4.36.0F
       mgmt-ipv4: 172.20.20.40
 
     access2:
-      kind: ceos
+      kind: arista_ceos
       image: ceos:4.36.0F
       mgmt-ipv4: 172.20.20.50
 
     access3:
-      kind: ceos
+      kind: arista_ceos
       image: ceos:4.36.0F
       mgmt-ipv4: 172.20.20.60
 
