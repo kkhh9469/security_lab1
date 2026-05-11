@@ -1,0 +1,163 @@
+# access1
+conf t
+vlan 10
+name employee
+vlan 50
+name guest
+
+interface ethernet 1-2
+
+
+interface ethernet 3
+switchport mode access
+switchport access vlan 10
+
+interface ethernet 4
+switchport mode access
+switchport access vlan 50
+
+
+-----------------------------
+# access2
+conf t
+vlan 20
+name management
+
+interface ethernet 1-2
+
+
+interface ethernet 3-4
+switchport mode access
+switchport access vlan 20
+
+-----------------------------
+# access3
+conf t
+vlan 30
+name server
+vlan 40
+name DMZ
+
+interface ethernet 3
+switchport mode access
+switchport access vlan 30
+
+interface ethernet 4
+switchport mode access
+switchport access vlan 40
+
+-----------------------------
+# core1
+conf t
+
+ip routing
+
+vlan 10
+name employee
+vlan 20
+name management
+vlan 30
+name server
+vlan 40
+name DMZ
+vlan 50
+name guest
+vlan 4094
+name mlag
+
+interface vlan10
+ip address 192.168.110.2
+interface vlan20
+ip address 192.168.120.2
+interface vlan30
+ip address 192.168.130.2
+interface vlan40
+ip address 192.168.140.2
+interface vlan50
+ip address 192.168.150.2
+interface vlan 4094
+ip address 192.168.255.1/30
+
+interface ethernet 2-3
+channel-group 10 mode active
+
+interface port-Channel 10
+switchport mode trunk
+no shutdown
+vrrp 10 ipv4 192.168.110.1
+vrrp 20 ipv4 192.168.120.1
+vrrp 30 ipv4 192.168.130.1
+vrrp 40 ipv4 192.168.140.1
+vrrp 50 ipv4 192.168.150.1
+
+mlag conf
+domain-id core
+local-interface vlan 4094
+peer-address 192.168.255.2
+peer-link port-Channel 1
+
+
+interface loopback 0
+2.2.2.2/32
+interface ethernet 1
+no switchport
+ip address 10.0.0.2/30
+no shutdown
+
+
+-----------------------------
+# core2
+conf t
+
+ip routing
+
+vlan 10
+name employee
+vlan 20
+name management
+vlan 30
+name server
+vlan 40
+name DMZ
+vlan 50
+name guest
+vlan 4094
+name mlag
+
+interface vlan10
+ip address 192.168.110.3
+interface vlan20
+ip address 192.168.120.3
+interface vlan30
+ip address 192.168.130.3
+interface vlan40
+ip address 192.168.140.3
+interface vlan50
+ip address 192.168.150.3
+interface vlan 4094
+ip address 192.168.255.2/30
+
+interface ethernet 2-3
+channel-group 10 mode active
+
+interface port-Channel 10
+switchport mode trunk
+no shutdown
+vrrp 10 ipv4 192.168.110.1
+vrrp 20 ipv4 192.168.120.1
+vrrp 30 ipv4 192.168.130.1
+vrrp 40 ipv4 192.168.140.1
+vrrp 50 ipv4 192.168.150.1
+
+interface loopback 0
+2.2.2.2/32
+interface ethernet 1
+no switchport
+ip address 10.0.0.6/30
+no shutdown
+
+
+
+
+-----------------------------
+# edge1
