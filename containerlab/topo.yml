@@ -2,13 +2,11 @@ name: security-lab1
 
 topology:
   nodes:
-    # ── Edge 라우터 ──────────────────────────
     edge1:
       kind: vyosnetworks_vyos
       image: vyos:2026.03-stream
       mgmt-ipv4: 172.20.20.10
 
-    # ── Core 스위치 (Arista EOS) ─────────────
     core1:
       kind: ceos
       image: ceos:4.36.0F
@@ -19,7 +17,6 @@ topology:
       image: ceos:4.36.0F
       mgmt-ipv4: 172.20.20.30
 
-    # ── Access 스위치 (Arista EOS) ───────────
     access1:
       kind: ceos
       image: ceos:4.36.0F
@@ -35,7 +32,6 @@ topology:
       image: ceos:4.36.0F
       mgmt-ipv4: 172.20.20.60
 
-    # ── Host 노드 (Alpine) ────────────────────
     host1:
       kind: linux
       image: alpine:latest
@@ -68,7 +64,6 @@ topology:
         - ip route add default via 192.168.120.1
         - ip link set eth1 up
 
-    # ── Server 노드 (Alpine + httpd) ──────────
     nas:
       kind: linux
       image: alpine:latest
