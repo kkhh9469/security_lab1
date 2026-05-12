@@ -6,7 +6,8 @@ vlan 50
 name guest
 
 interface ethernet 1-2
-
+description core_uplink
+channel-group 10 mode active
 
 interface ethernet 3
 switchport mode access
@@ -16,6 +17,9 @@ interface ethernet 4
 switchport mode access
 switchport access vlan 50
 
+interface port-channel 10
+switchport mode trunk
+sw trunk allowed vlan 10, 50
 
 -----------------------------
 # access2
@@ -24,11 +28,16 @@ vlan 20
 name management
 
 interface ethernet 1-2
-
+description core_uplink
+channel-group 10 mode active
 
 interface ethernet 3-4
 switchport mode access
 switchport access vlan 20
+
+interface port-channel 10
+switchport mode trunk
+sw trunk allowed vlan 20
 
 -----------------------------
 # access3
@@ -38,6 +47,10 @@ name server
 vlan 40
 name DMZ
 
+interface ethernet 1-2
+description core_uplink
+channel-group 10 mode active
+
 interface ethernet 3
 switchport mode access
 switchport access vlan 30
@@ -45,6 +58,10 @@ switchport access vlan 30
 interface ethernet 4
 switchport mode access
 switchport access vlan 40
+
+interface port-channel 10
+switchport mode trunk
+sw trunk allowed vlan 30, 40
 
 -----------------------------
 # core1
@@ -64,6 +81,7 @@ vlan 50
 name guest
 vlan 4094
 name mlag
+trunk group mlagpeer
 
 interface vlan10
 ip address 192.168.110.2
@@ -81,6 +99,10 @@ ip address 192.168.255.1/30
 interface ethernet 2-3
 channel-group 10 mode active
 
+interface ethernet 4
+description Link_to_Access1
+channel-group 11 mode active
+
 interface port-Channel 10
 switchport mode trunk
 no shutdown
@@ -90,11 +112,15 @@ vrrp 30 ipv4 192.168.130.1
 vrrp 40 ipv4 192.168.140.1
 vrrp 50 ipv4 192.168.150.1
 
+interface port-channel 11
+switchport mode trunk
+mlag 1
+
 mlag conf
 domain-id core
 local-interface vlan 4094
 peer-address 192.168.255.2
-peer-link port-Channel 1
+peer-link port-Channel 10
 
 
 interface loopback 0
@@ -123,6 +149,8 @@ vlan 50
 name guest
 vlan 4094
 name mlag
+trunk group mlagpeer
+
 
 interface vlan10
 ip address 192.168.110.3
@@ -140,6 +168,10 @@ ip address 192.168.255.2/30
 interface ethernet 2-3
 channel-group 10 mode active
 
+interface ethernet 4
+description Link_to_Access1
+channel-group 11 mode active
+
 interface port-Channel 10
 switchport mode trunk
 no shutdown
@@ -148,6 +180,16 @@ vrrp 20 ipv4 192.168.120.1
 vrrp 30 ipv4 192.168.130.1
 vrrp 40 ipv4 192.168.140.1
 vrrp 50 ipv4 192.168.150.1
+
+interface port-channel 11
+switchport mode trunk
+mlag 1
+
+mlag conf
+domain-id core
+local-interface vlan 4094
+peer-address 192.168.255.1
+peer-link port-Channel 10
 
 interface loopback 0
 2.2.2.2/32
