@@ -69,6 +69,8 @@ conf t
 
 ip routing
 
+spanning-tree mst 0 priority 4096
+
 vlan 10
 name employee
 vlan 20
@@ -105,6 +107,7 @@ channel-group 11 mode active
 
 interface port-Channel 10
 switchport mode trunk
+switchport trunk group mlagpeer
 no shutdown
 vrrp 10 ipv4 192.168.110.1
 vrrp 20 ipv4 192.168.120.1
@@ -174,6 +177,7 @@ channel-group 11 mode active
 
 interface port-Channel 10
 switchport mode trunk
+switchport trunk group mlagpeer
 no shutdown
 vrrp 10 ipv4 192.168.110.1
 vrrp 20 ipv4 192.168.120.1
