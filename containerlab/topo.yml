@@ -36,41 +36,46 @@ topology:
       kind: linux
       image: alpine:latest
       exec:
+        - apk add curl
         - ip addr add 192.168.110.11/24 dev eth1
+        - ip route del default
         - ip route add default via 192.168.110.1
-        - ip link set eth1 up
 
     guest1:
       kind: linux
       image: alpine:latest
       exec:
+        - apk add curl
         - ip addr add 192.168.150.11/24 dev eth1
+        - ip route del default
         - ip route add default via 192.168.150.1
-        - ip link set eth1 up
 
     admin:
       kind: linux
       image: alpine:latest
       exec:
+        - apk add curl
         - ip addr add 192.168.120.11/24 dev eth1
+        - ip route del default
         - ip route add default via 192.168.120.1
-        - ip link set eth1 up
 
     monitoring:
       kind: linux
       image: alpine:latest
       exec:
+        - apk add curl
         - ip addr add 192.168.120.12/24 dev eth1
+        - ip route del default
         - ip route add default via 192.168.120.1
-        - ip link set eth1 up
 
     nas:
       kind: linux
       image: alpine:latest
       exec:
+        - apk add curl
         - ip addr add 192.168.130.11/24 dev eth1
+        - ip route del default
         - ip route add default via 192.168.130.1
-        - ip link set eth1 up
         - mkdir -p /storage
         - sh -c "echo 'backup data' > /storage/file1.txt"
 
@@ -78,13 +83,15 @@ topology:
       kind: linux
       image: alpine:latest
       exec:
+        - apk add busybox-extras
+        - apk add curl
         - ip addr add 192.168.140.11/24 dev eth1
+        - ip route del default
         - ip route add default via 192.168.140.1
-        - ip link set eth1 up
         - mkdir -p /www
         - sh -c "echo '<h1>Server-B</h1><p>VLAN30 - 192.168.140.11</p>' > /www/index.html"
         - httpd -p 80 -h /www
-        - nc -lk -p 443 &
+        - sh -c "nc -lk -p 443 &"
 
   links:
     # edge - core
