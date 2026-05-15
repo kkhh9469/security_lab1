@@ -159,6 +159,20 @@ no switchport
 ip address 10.0.0.2/30
 no shutdown
 
+router ospf 1
+router-id 2.2.2.2
+interface ethernet 1
+ip ospf area 0.0.0.0
+interface vlan10
+ip ospf area 0.0.0.0
+interface vlan20
+ip ospf area 0.0.0.0
+interface vlan30
+ip ospf area 0.0.0.0
+interface vlan40
+ip ospf area 0.0.0.0
+interface vlan50
+ip ospf area 0.0.0.0
 
 -----------------------------
 # core2
@@ -254,8 +268,20 @@ no switchport
 ip address 10.0.0.6/30
 no shutdown
 
-
-
+router ospf 1
+router-id 3.3.3.3
+interface ethernet 1
+ip ospf area 0.0.0.0
+interface vlan10
+ip ospf area 0.0.0.0
+interface vlan20
+ip ospf area 0.0.0.0
+interface vlan30
+ip ospf area 0.0.0.0
+interface vlan40
+ip ospf area 0.0.0.0
+interface vlan50
+ip ospf area 0.0.0.0
 
 -----------------------------
 # edge1
