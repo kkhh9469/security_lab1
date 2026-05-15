@@ -86,15 +86,30 @@ name mlag
 trunk group mlagpeer
 
 interface vlan10
-ip address 192.168.110.2
+ip address 192.168.110.2/24
+vrrp 10 ipv4 192.168.110.1
+vrrp 10 priority 100
+vrrp 10 preempt
 interface vlan20
-ip address 192.168.120.2
+ip address 192.168.120.2/24
+vrrp 20 ipv4 192.168.120.1
+vrrp 20 priority 100
+vrrp 20 preempt
 interface vlan30
-ip address 192.168.130.2
+ip address 192.168.130.2/24
+vrrp 30 ipv4 192.168.130.1
+vrrp 30 priority 100
+vrrp 30 preempt
 interface vlan40
-ip address 192.168.140.2
+ip address 192.168.140.2/24
+vrrp 40 ipv4 192.168.140.1
+vrrp 40 priority 100
+vrrp 40 preempt
 interface vlan50
-ip address 192.168.150.2
+ip address 192.168.150.2/24
+vrrp 50 ipv4 192.168.150.1
+vrrp 50 priority 100
+vrrp 50 preempt
 interface vlan 4094
 ip address 192.168.255.1/30
 
@@ -105,19 +120,30 @@ interface ethernet 4
 description Link_to_Access1
 channel-group 11 mode active
 
+interface ethernet 5
+description Link_to_Access2
+channel-group 12 mode active
+
+interface ethernet 6
+description Link_to_Access2
+channel-group 13 mode active
+
 interface port-Channel 10
 switchport mode trunk
 switchport trunk group mlagpeer
 no shutdown
-vrrp 10 ipv4 192.168.110.1
-vrrp 20 ipv4 192.168.120.1
-vrrp 30 ipv4 192.168.130.1
-vrrp 40 ipv4 192.168.140.1
-vrrp 50 ipv4 192.168.150.1
 
 interface port-channel 11
 switchport mode trunk
 mlag 1
+
+interface port-channel 12
+switchport mode trunk
+mlag 2
+
+interface port-channel 13
+switchport mode trunk
+mlag 3
 
 mlag conf
 domain-id core
@@ -127,7 +153,7 @@ peer-link port-Channel 10
 
 
 interface loopback 0
-2.2.2.2/32
+ip address 2.2.2.2/32
 interface ethernet 1
 no switchport
 ip address 10.0.0.2/30
@@ -156,15 +182,30 @@ trunk group mlagpeer
 
 
 interface vlan10
-ip address 192.168.110.3
+ip address 192.168.110.3/24
+vrrp 10 ipv4 192.168.110.1
+vrrp 10 priority 110
+vrrp 10 preempt
 interface vlan20
-ip address 192.168.120.3
+ip address 192.168.120.3/24
+vrrp 20 ipv4 192.168.120.1
+vrrp 20 priority 110
+vrrp 20 preempt
 interface vlan30
-ip address 192.168.130.3
+ip address 192.168.130.3/24
+vrrp 30 ipv4 192.168.130.1
+vrrp 30 priority 110
+vrrp 30 preempt
 interface vlan40
-ip address 192.168.140.3
+ip address 192.168.140.3/24
+vrrp 40 ipv4 192.168.140.1
+vrrp 40 priority 110
+vrrp 40 preempt
 interface vlan50
-ip address 192.168.150.3
+ip address 192.168.150.3/24
+vrrp 50 ipv4 192.168.150.1
+vrrp 50 priority 110
+vrrp 50 preempt
 interface vlan 4094
 ip address 192.168.255.2/30
 
@@ -175,19 +216,30 @@ interface ethernet 4
 description Link_to_Access1
 channel-group 11 mode active
 
+interface ethernet 5
+description Link_to_Access2
+channel-group 12 mode active
+
+interface ethernet 6
+description Link_to_Access2
+channel-group 13 mode active
+
 interface port-Channel 10
 switchport mode trunk
 switchport trunk group mlagpeer
 no shutdown
-vrrp 10 ipv4 192.168.110.1
-vrrp 20 ipv4 192.168.120.1
-vrrp 30 ipv4 192.168.130.1
-vrrp 40 ipv4 192.168.140.1
-vrrp 50 ipv4 192.168.150.1
 
 interface port-channel 11
 switchport mode trunk
 mlag 1
+
+interface port-channel 12
+switchport mode trunk
+mlag 2
+
+interface port-channel 13
+switchport mode trunk
+mlag 3
 
 mlag conf
 domain-id core
@@ -196,7 +248,7 @@ peer-address 192.168.255.1
 peer-link port-Channel 10
 
 interface loopback 0
-2.2.2.2/32
+ip address 3.3.3.3/32
 interface ethernet 1
 no switchport
 ip address 10.0.0.6/30
