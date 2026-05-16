@@ -285,3 +285,14 @@ ip ospf area 0.0.0.0
 
 -----------------------------
 # edge1
+configure
+
+set interfaces ethernet eth2 address 10.0.0.1/30
+set interfaces ethernet eth3 address 10.0.0.5/30
+set interfaces loopback lo address 1.1.1.1/32
+
+set protocols ospf interface eth2 area 0.0.0.0
+set protocols ospf interface eth3 area 0.0.0.0
+set protocols ospf interface lo area 0.0.0.0
+
+commit
