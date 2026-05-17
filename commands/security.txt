@@ -6,7 +6,7 @@ permit tcp 192.168.110.0/24 192.168.130.0/24 eq 80
 permit tcp 192.168.110.0/24 192.168.130.0/24 eq 443
 deny ip any 192.168.130.0/24
 interface vlan 10
-ip access-group employee in
+ip access-group vlan10_employee_in in
 
 ip access-list vlan50_guest_in
 deny ip 192.168.150.0/24 192.168.120.0/24
@@ -17,4 +17,4 @@ deny ip 192.168.150.0/24 host 2.2.2.2
 deny ip 192.168.150.0/24 host 3.3.3.3
 permit ip 192.168.150.0/24 any
 interface ethernet vlan 50
-ip access-group guest in
+ip access-group vlan50_guest_in in
