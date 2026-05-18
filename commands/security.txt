@@ -11,6 +11,15 @@ exit
 interface ethernet 4
 ip access-group vlan10_employee_in in
 
+ip access-list vlan20_admin_in
+permit ip 192.168.120.0/24 192.168.0.0/16
+permit ip 192.168.120.0/24 host 2.2.2.2
+permit ip 192.168.120.0/24 host 3.3.3.3
+exit
+interface ethernet 5
+ip access-group vlan20_admin_in in
+
+
 ip access-list vlan50_guest_in
 deny ip 192.168.150.0/24 192.168.120.0/24
 deny ip 192.168.150.0/24 192.168.130.0/24
