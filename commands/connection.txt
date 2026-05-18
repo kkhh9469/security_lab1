@@ -9,17 +9,13 @@ interface ethernet 1-2
 description core_uplink
 channel-group 10 mode active
 
-interface ethernet 3
+interface ethernet 3-4
 switchport mode access
 switchport access vlan 10
 
-interface ethernet 4
-switchport mode access
-switchport access vlan 50
-
 interface port-channel 10
 switchport mode trunk
-sw trunk allowed vlan 10, 50
+sw trunk allowed vlan 10
 
 -----------------------------
 # access2
@@ -42,10 +38,9 @@ sw trunk allowed vlan 20
 -----------------------------
 # access3
 conf t
+
 vlan 30
 name server
-vlan 40
-name DMZ
 
 interface ethernet 1-2
 description core_uplink
@@ -55,13 +50,48 @@ interface ethernet 3
 switchport mode access
 switchport access vlan 30
 
-interface ethernet 4
+interface port-channel 10
+switchport mode trunk
+sw trunk allowed vlan 30
+
+-----------------------------
+# access4
+conf t
+
+vlan 40
+name DMZ
+
+interface ethernet 1-2
+description core_uplink
+channel-group 10 mode active
+
+interface ethernet 3
 switchport mode access
 switchport access vlan 40
 
 interface port-channel 10
 switchport mode trunk
-sw trunk allowed vlan 30, 40
+sw trunk allowed vlan 40
+
+-----------------------------
+# access5
+conf t
+
+vlan 40
+name DMZ
+
+interface ethernet 1-2
+description core_uplink
+channel-group 10 mode active
+
+interface ethernet 3
+switchport mode access
+switchport access vlan 50
+
+interface port-channel 10
+switchport mode trunk
+sw trunk allowed vlan 50
+
 
 -----------------------------
 # core1
@@ -128,6 +158,14 @@ interface ethernet 6
 description Link_to_Access2
 channel-group 13 mode active
 
+interface ethernet 7
+description Link_to_Access2
+channel-group 14 mode active
+
+interface ethernet 8
+description Link_to_Access2
+channel-group 15 mode active
+
 interface port-Channel 10
 switchport mode trunk
 switchport trunk group mlagpeer
@@ -144,6 +182,14 @@ mlag 2
 interface port-channel 13
 switchport mode trunk
 mlag 3
+
+interface port-channel 14
+switchport mode trunk
+mlag 4
+
+interface port-channel 15
+switchport mode trunk
+mlag 5
 
 mlag conf
 domain-id core
@@ -240,6 +286,14 @@ interface ethernet 6
 description Link_to_Access2
 channel-group 13 mode active
 
+interface ethernet 7
+description Link_to_Access2
+channel-group 14 mode active
+
+interface ethernet 8
+description Link_to_Access2
+channel-group 15 mode active
+
 interface port-Channel 10
 switchport mode trunk
 switchport trunk group mlagpeer
@@ -256,6 +310,14 @@ mlag 2
 interface port-channel 13
 switchport mode trunk
 mlag 3
+
+interface port-channel 14
+switchport mode trunk
+mlag 4
+
+interface port-channel 15
+switchport mode trunk
+mlag 5
 
 mlag conf
 domain-id core
